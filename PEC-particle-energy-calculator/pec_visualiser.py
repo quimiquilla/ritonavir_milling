@@ -13,7 +13,7 @@ import pec_utilities
 class MorphologyVisualiser:
 
     def __init__(self, morph, normal, hkl, point, new_facet_edges, new_facet_ordered, crystal, area):
-        """DUMMY RUN """
+
         ax = self.generate_BFDH_plot(morph, 'blue')
         self._add_plane(normal=normal, hkl=hkl, point=point, ax=ax)
         self._plot_intercept_points(intercept_points=new_facet_edges, ax=ax)

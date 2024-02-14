@@ -9,6 +9,16 @@ def parse_input_file(filename, filepath):
     Read the lines from an input file using a standard format.
     """
 
+    def parse_line(line):
+        pattern = r"[\(\[\{\}]\s*(.*?)\s*[\)\]\}]\s*(.*)"
+        match = re.search(pattern, line)
+        if match:
+            string_with_brackets = "{" + match.group(1) + "}"
+            float_value = float(match.group(2))
+            return string_with_brackets, float_value
+        else:
+            raise ValueError("Can't read your data, try changing the format.")
+
     absolute_path = os.path.join(filepath, filename)
 
     hkl_strings = []
@@ -20,9 +30,9 @@ def parse_input_file(filename, filepath):
         lattice_energy = float(lines[3].rstrip("\n"))
         facet_lines = lines[4:]
         for line in facet_lines:
-            split = line.split("\t")
+            split = parse_line(line.rstrip("\n"))
             hkl_strings.append(split[0])
-            attachment_energy_values.append(float(split[1]))
+            attachment_energy_values.append((split[1]))
 
     return lattice_energy, hkl_strings, attachment_energy_values
 

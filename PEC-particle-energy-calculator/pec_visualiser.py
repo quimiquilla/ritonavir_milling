@@ -208,21 +208,29 @@ class ParticleEnergyVisualiser:
         ax = self.generate_energy_plot(nanoparticles_1, nanoparticles_2)
 
     @staticmethod
-    def generate_energy_plot(nanoparticles_1, nanoparticles_2):
+    def generate_energy_plot(nanoparticles_1, nanoparticles_2, smallest_size=False):
         fig, ax = plt.subplots()
         ax.grid(False)
         plt.axis('on')
-        ax.set_xlabel('PED (nm)')
+
         ax.set_ylabel('Particle Energy (kJ/mol)')
 
         # we divide the particle size by 10 to express results in nm
-        size_1 = [particle.equivalent_diameter / 10 for particle in nanoparticles_1]
-        energy_1 = [particle.particle_energy for particle in nanoparticles_1]
-        size_2 = [particle.equivalent_diameter / 10 for particle in nanoparticles_2]
-        energy_2 = [particle.particle_energy for particle in nanoparticles_2]
+        if smallest_size:
+            ax.set_xlabel('Smallest size (nm)')
+            size_1 = [particle.smallest_dimension / 10 for particle in nanoparticles_1]
+            energy_1 = [particle.particle_energy for particle in nanoparticles_1]
+            size_2 = [particle.smallest_dimension / 10 for particle in nanoparticles_2]
+            energy_2 = [particle.particle_energy for particle in nanoparticles_2]
+        else:
+            size_1 = [particle.equivalent_diameter / 10 for particle in nanoparticles_1]
+            energy_1 = [particle.particle_energy for particle in nanoparticles_1]
+            size_2 = [particle.equivalent_diameter / 10 for particle in nanoparticles_2]
+            energy_2 = [particle.particle_energy for particle in nanoparticles_2]
+            ax.set_xlabel('PED (nm)')
 
-        ax.plot(size_1, energy_1, lw=1.5, c="red", label="form 1")
-        ax.plot(size_2, energy_2, lw=1.5, c="black", label="form 2")
+        ax.plot(size_1, energy_1, lw=1.5, c="red", label="form A")
+        ax.plot(size_2, energy_2, lw=1.5, c="black", label="form B")
 
         plt.legend(loc="best", frameon=False)
 

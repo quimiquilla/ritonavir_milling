@@ -168,6 +168,13 @@ class NanoParticle:
         return self.volume * self.crystal.calculated_density * 1E-24
 
     @property
+    def smallest_dimension(self):
+        """ Returns the length of the smallest side of the particle bounding box """
+        # size will be in Angstrom
+        major, median, minor = self.morphology.oriented_bounding_box.lengths
+        return (self.volume * minor ** 3 / self.morphology.volume) ** (1 / 3)
+
+    @property
     def _inner_hull_distances(self):
         """Get the distances used to define the inner hull"""
         distances = []

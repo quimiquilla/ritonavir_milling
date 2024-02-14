@@ -3,7 +3,8 @@
 Classes to prepare plots for PEC. This code is arranged in classes to allow further improvements in a tidier way.
 
 """
-
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -229,8 +230,8 @@ class ParticleEnergyVisualiser:
             energy_2 = [particle.particle_energy for particle in nanoparticles_2]
             ax.set_xlabel('PED (nm)')
 
-        ax.plot(size_1, energy_1, lw=1.5, c="red", label="form A")
-        ax.plot(size_2, energy_2, lw=1.5, c="black", label="form B")
+        ax.plot(size_1, energy_1, lw=1.5, c="red", label="form 1")
+        ax.plot(size_2, energy_2, lw=1.5, c="black", label="form 2")
 
         plt.legend(loc="best", frameon=False)
 

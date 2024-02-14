@@ -1,4 +1,5 @@
 import os
+import re
 import numpy as np
 import itertools
 from ccdc.io import EntryReader, CrystalReader

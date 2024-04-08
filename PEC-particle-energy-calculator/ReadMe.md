@@ -32,7 +32,7 @@ can be reproduced by running the following scripts:
 - Figure 2c: `run_RVR_particle_energy.py`
 - Figure 2d: `run_RVR_cross_check.py`
 
-The subdirectory **input_files** contains the *.cif* files of the DFT-d optimised crystal strucutres of Ritonavir form I and form II, *YIGPIO02* and *YIGPIO03*, respectively, as well as their corresponding energies.
+The subdirectory **input_files** contains the *.cif* files of the DFT-d optimised crystal structures of Ritonavir form I and form II, *YIGPIO02* and *YIGPIO03*, respectively, as well as their corresponding energies.
 The subdirectory **morphologies** contains the various crystal morphologies used in our work, which hare provided as a list of `h k l d` values, where *h*, *k* and *l* are the miller indices, and *d* is the perpendicular distance.
 
 ## Usage

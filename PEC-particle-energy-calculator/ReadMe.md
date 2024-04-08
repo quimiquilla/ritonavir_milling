@@ -3,7 +3,7 @@
 A Python code to calculate the total energy of idealized nanosized crystal particles.
 
 For more details about the methodology
-see [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://doi.org/10.26434/chemrxiv-2023-gz7kb).
+see [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121).
 Please cite this paper if you use PEC for your work.
 
 ## Dependencies
@@ -25,7 +25,7 @@ The principal scripts used by PEC are:
 - `pec_visualiser`
 
 Additionally, the results presented in Figure 2
-of [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://doi.org/10.26434/chemrxiv-2023-gz7kb)
+of [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121)
 can be reproduced by running the following scripts:
 
 - Figure 2b: `run_RVR_aspect_ratio.py`

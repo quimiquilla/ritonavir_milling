@@ -1,7 +1,7 @@
 # Population Balance Modelling of Particle Size evolution during milling
 
 Matlab code to run the Population Balance Modelling as presented
-in [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://chemrxiv.org/engage/chemrxiv/article-details/645112f307c3f0293717c139).
+in [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121).
 
 For further details on the methodology and on the parameters used, please refer to the main work and to the Supporting information.
 
@@ -14,7 +14,7 @@ Please cite this paper if you use this code or any part of it.
 ## Usage
 
 To reproduce the results presented in Figure 3
-of [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://doi.org/10.26434/chemrxiv-2023-gz7kb), 
+of [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121), 
 run the ```mainFully.m``` code.
 
 ## Author

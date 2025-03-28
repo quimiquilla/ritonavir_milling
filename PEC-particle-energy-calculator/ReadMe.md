@@ -3,7 +3,7 @@
 A Python code to calculate the total energy of idealized nanosized crystal particles.
 
 For more details about the methodology
-see [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://doi.org/10.26434/chemrxiv-2023-gz7kb).
+see [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121).
 Please cite this paper if you use PEC for your work.
 
 ## Dependencies
@@ -25,14 +25,14 @@ The principal scripts used by PEC are:
 - `pec_visualiser`
 
 Additionally, the results presented in Figure 2
-of [Disappearing polymorphs reappear in the Mill: the case of Ritonavir](https://doi.org/10.26434/chemrxiv-2023-gz7kb)
+of [Crystal size, shape, and conformational changes drive both the disappearance and reappearance of ritonavir polymorphs in the mill](https://www.pnas.org/doi/abs/10.1073/pnas.2319127121)
 can be reproduced by running the following scripts:
 
 - Figure 2b: `run_RVR_aspect_ratio.py`
 - Figure 2c: `run_RVR_particle_energy.py`
 - Figure 2d: `run_RVR_cross_check.py`
 
-The subdirectory **input_files** contains the *.cif* files of the DFT-d optimised crystal strucutres of Ritonavir form I and form II, *YIGPIO02* and *YIGPIO03*, respectively, as well as their corresponding energies.
+The subdirectory **input_files** contains the *.cif* files of the DFT-d optimised crystal structures of Ritonavir form I and form II, *YIGPIO02* and *YIGPIO03*, respectively, as well as their corresponding energies.
 The subdirectory **morphologies** contains the various crystal morphologies used in our work, which hare provided as a list of `h k l d` values, where *h*, *k* and *l* are the miller indices, and *d* is the perpendicular distance.
 
 ## Usage

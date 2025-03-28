@@ -4,6 +4,7 @@ Classes to prepare plots for PEC. This code is arranged in classes to allow furt
 
 """
 import matplotlib
+
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -99,6 +100,8 @@ class MorphologyVisualiser:
         """
         Main driving function for plotting a morphology
 
+        see https://downloads.ccdc.cam.ac.uk/documentation/API/descriptive_docs/morphology.html#morphology
+
         :param morphology: obj containing BFDH facet information
         :param colour: str desired colour for facets
         :return: obj matplotlib object for plotting on axes
@@ -126,7 +129,7 @@ class MorphologyVisualiser:
         ax.set_ylim3d(-1 * extent, extent)
         ax.set_zlim3d(-1 * extent, extent)
 
-        plt.show()  # Save image
+        plt.show()
         return ax
 
     @staticmethod
@@ -199,6 +202,8 @@ class AspectRatioVisualiser:
 
         ax.plot(limits, limits, "k", lw=0.5)
 
+        plt.show(block=True)
+
         return ax
 
 
@@ -230,10 +235,15 @@ class ParticleEnergyVisualiser:
             energy_2 = [particle.particle_energy for particle in nanoparticles_2]
             ax.set_xlabel('PED (nm)')
 
+        ax.axhline(y=nanoparticles_1[-1].bulk_energy, c="r", ls=":")
+        ax.axhline(y=nanoparticles_2[-1].bulk_energy, c="k", ls=":")
+
         ax.plot(size_1, energy_1, lw=1.5, c="red", label="form 1")
         ax.plot(size_2, energy_2, lw=1.5, c="black", label="form 2")
 
         plt.legend(loc="best", frameon=False)
+
+        plt.show(block=True)
 
         return ax
 
@@ -262,5 +272,7 @@ class CrossCheckVisualiser:
         ax.tick_params(axis='both', which='major', labelsize=8)
 
         ax.bar(sizes, fractions, color="#f3b61f", width=5, edgecolor="k", linewidth=0.5)
+
+        plt.show(block=True)
 
         return ax

@@ -29,15 +29,26 @@ def run_morphology_sweep(crystal, lattice_energy, attachment_energies, morpholog
     return nanoparticles
 
 
-def run_cross_check(nanoparticles_1, nanoparticles_2, energy_difference):
+def run_cross_check(nanoparticles_1, nanoparticles_2):
     """ Check all combinations of particles to see which result in switches for the given size"""
     count_total = 0
     count_switched = 0
     for part_1 in nanoparticles_1:
         for part_2 in nanoparticles_2:
             # the surface energy difference (changed of sign) needs to be larger than lattice energy difference
-            en_diff = - (part_1.surface_energy_penalty - part_2.surface_energy_penalty)
-            if en_diff >= energy_difference:
+            # this assumes that part_1 was calculated for the metastable polymorph and part_2 for the stable_1,
+            # better to check if that's actually the case
+            if part_1.bulk_energy > part_2.bulk_energy:
+                lattice_energy_difference = part_1.bulk_energy - part_2.bulk_energy
+            else:
+                # if not, swap the energies
+                lattice_energy_difference = part_2.bulk_energy - part_1.bulk_energy
+
+            if lattice_energy_difference < 0:
+                raise ValueError("The lattice energy difference is negative! Please check!")
+
+            surf_pen_diff = - (part_1.surface_energy_penalty - part_2.surface_energy_penalty)
+            if surf_pen_diff >= lattice_energy_difference:
                 count_switched += 1
             count_total += 1
 
@@ -53,52 +64,56 @@ def read_morphologies(crystal, path):
     return morphology_distances
 
 
-# read the .cif (DFT optimized structure) of RVR-I (CSD refcode YIGPIO02)
-rvr_1_crystal = pec_utilities.read_structure(structure_name="YIGPIO02_opt_sym.cif",
-                                             path=os.path.join(os.getcwd(), "input_files"))
+if __name__ == "__main__":
+    # read the .cif (DFT optimized structure) of RVR-I (CSD refcode YIGPIO02)
+    rvr_1_crystal = pec_utilities.read_structure(structure_name="YIGPIO02_opt_sym.cif",
+                                                 path=os.path.join(os.getcwd(), "input_files"))
 
-# read the .cif (DFT optimized structure) of RVR-II (CSD refcode YIGPIO03)
-rvr_2_crystal = pec_utilities.read_structure(structure_name="YIGPIO03_opt_sym.cif",
-                                             path=os.path.join(os.getcwd(), "input_files"))
+    # read the .cif (DFT optimized structure) of RVR-II (CSD refcode YIGPIO03)
+    rvr_2_crystal = pec_utilities.read_structure(structure_name="YIGPIO03_opt_sym.cif",
+                                                 path=os.path.join(os.getcwd(), "input_files"))
 
-# get the energies of RVR-I and RVR-II
-rvr_1_lattice_energy, rvr_1_attachment_energies = pec_utilities.get_attachment_energies(rvr_1_crystal,
-                                                                                        filename="YIGPIO02_energies.txt",
-                                                                                        filepath=os.path.join(
-                                                                                            os.getcwd(), "input_files"))
+    # get the energies of RVR-I and RVR-II
+    rvr_1_lattice_energy, rvr_1_attachment_energies = pec_utilities.get_attachment_energies(rvr_1_crystal,
+                                                                                            filename="YIGPIO02_energies.txt",
+                                                                                            filepath=os.path.join(
+                                                                                                os.getcwd(),
+                                                                                                "input_files"))
 
-rvr_2_lattice_energy, rvr_2_attachment_energies = pec_utilities.get_attachment_energies(rvr_2_crystal,
-                                                                                        filename="YIGPIO03_energies.txt",
-                                                                                        filepath=os.path.join(
-                                                                                            os.getcwd(), "input_files"))
+    rvr_2_lattice_energy, rvr_2_attachment_energies = pec_utilities.get_attachment_energies(rvr_2_crystal,
+                                                                                            filename="YIGPIO03_energies.txt",
+                                                                                            filepath=os.path.join(
+                                                                                                os.getcwd(),
+                                                                                                "input_files"))
 
-# we calculate the lattice energy difference to check if switch condition is satisfied
-lattice_energy_difference = rvr_1_lattice_energy - rvr_2_lattice_energy
+    # we calculate the lattice energy difference to check if switch condition is satisfied
+    #
+    lattice_energy_difference = rvr_1_lattice_energy - rvr_2_lattice_energy
 
-# get the morphologies
-rvr_1_morphologies = read_morphologies(rvr_1_crystal, os.path.join("morphologies", "form_1"))
-rvr_2_morphologies = read_morphologies(rvr_2_crystal, os.path.join("morphologies", "form_2"))
+    # get the morphologies
+    rvr_1_morphologies = read_morphologies(rvr_1_crystal, os.path.join("morphologies", "form_1"))
+    rvr_2_morphologies = read_morphologies(rvr_2_crystal, os.path.join("morphologies", "form_2"))
 
-switch_fraction = []
-# the size in nanometers
-sizes = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+    switch_fraction = []
+    # the size in nanometers
+    sizes = [20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-time_start_overall = time.time()
-# then we loop
-for size in sizes:
-    # NanoParticle wants the size in Angstroms
-    diameter = size * 10
-    print(f"### Running calculation for size of {size} nm ###")
-    nanoparticles_1 = run_morphology_sweep(rvr_1_crystal, rvr_1_lattice_energy, rvr_1_attachment_energies,
-                                           rvr_1_morphologies, equivalent_diameter=diameter)
-    nanoparticles_2 = run_morphology_sweep(rvr_2_crystal, rvr_2_lattice_energy, rvr_2_attachment_energies,
-                                           rvr_2_morphologies, equivalent_diameter=diameter)
-    time_start = time.time()
-    count_switched, count_total = run_cross_check(nanoparticles_1, nanoparticles_2, lattice_energy_difference)
-    switch_fraction.append(100 * count_switched / count_total)
-    print(f"time to calculate {count_total} combinations: {round(time.time() - time_start, 2)}")
+    time_start_overall = time.time()
+    # then we loop
+    for size in sizes:
+        # NanoParticle wants the size in Angstroms
+        diameter = size * 10
+        print(f"### Running calculation for size of {size} nm ###")
+        nanoparticles_1 = run_morphology_sweep(rvr_1_crystal, rvr_1_lattice_energy, rvr_1_attachment_energies,
+                                               rvr_1_morphologies, equivalent_diameter=diameter)
+        nanoparticles_2 = run_morphology_sweep(rvr_2_crystal, rvr_2_lattice_energy, rvr_2_attachment_energies,
+                                               rvr_2_morphologies, equivalent_diameter=diameter)
+        time_start = time.time()
+        count_switched, count_total = run_cross_check(nanoparticles_1, nanoparticles_2, lattice_energy_difference)
+        switch_fraction.append(100 * count_switched / count_total)
+        print(f"time to calculate {count_total} combinations: {round(time.time() - time_start, 2)}")
 
-print(f"total time: {round(time.time() - time_start_overall, 2)} s")
+    print(f"total time: {round(time.time() - time_start_overall, 2)} s")
 
-# finally plot the results
-CrossCheckVisualiser.generate_cross_check_plot(sizes, switch_fraction)
+    # finally plot the results
+    CrossCheckVisualiser.generate_cross_check_plot(sizes, switch_fraction)

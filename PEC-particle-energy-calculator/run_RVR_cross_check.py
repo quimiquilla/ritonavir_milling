@@ -57,10 +57,9 @@ def run_cross_check(nanoparticles_1, nanoparticles_2):
 
 def read_morphologies(crystal, path):
     morphology_distances = []
-
     for f in os.listdir(path):
-        morphology_distances.append(pec_utilities.read_morphology_file(crystal, os.path.join(path, f)))
-
+        facet_data = pec_utilities.read_morphology_file(crystal, os.path.join(path, f))
+        morphology_distances.append(facet_data)
     return morphology_distances
 
 
@@ -109,7 +108,7 @@ if __name__ == "__main__":
         nanoparticles_2 = run_morphology_sweep(rvr_2_crystal, rvr_2_lattice_energy, rvr_2_attachment_energies,
                                                rvr_2_morphologies, equivalent_diameter=diameter)
         time_start = time.time()
-        count_switched, count_total = run_cross_check(nanoparticles_1, nanoparticles_2, lattice_energy_difference)
+        count_switched, count_total = run_cross_check(nanoparticles_1, nanoparticles_2)
         switch_fraction.append(100 * count_switched / count_total)
         print(f"time to calculate {count_total} combinations: {round(time.time() - time_start, 2)}")
 

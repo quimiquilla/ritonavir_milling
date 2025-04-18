@@ -2,6 +2,7 @@ import os
 import re
 import numpy as np
 import itertools
+import pandas as pd
 from ccdc.io import EntryReader, CrystalReader
 
 
@@ -293,3 +294,42 @@ def read_morphology_file(crystal, morphology_file):
         d = float(split[3])
         morphology_distances.append((crystal.miller_indices(h, k, l), d))
     return morphology_distances
+
+
+def verify_cross_size(particles_1: list, particles_2: list):
+    """
+    Find the intersection point (if present) between the particle energies of two systems.
+
+    TODO the accuracy of this method will depend on the length of the two lists!
+    TODO A method based on interpolation might be more accurate
+
+    :param particles_1: a list of NanoParticle objects
+    :param particles_2: a list of NanoParticle objects
+    :return: an empty list if no intersection, a list with size values (they should be two equal values!) otherwise
+    """
+    if len(particles_1) != len(particles_2):
+        raise ValueError("The two lists have different dimensions!")
+
+    # we must decide on how to determine intersection
+    # safe way is to check against the stable form, as lattice energy tells us it will be more stable at larger size
+    # regardless of size they'll all have same bulk energy, so it's sufficient to check the first one
+    if particles_1[0].bulk_energy == particles_2[0].bulk_energy:
+        raise ValueError("The lattice energies are the same!")
+    if particles_1[0].bulk_energy < particles_2[0].bulk_energy:
+        reference_particles = particles_1
+        comparison_particles = particles_2
+    else:
+        reference_particles = particles_2
+        comparison_particles = particles_1
+
+    intersections = []
+    # if they cross, energy of reference is higher before crossing point and lower after crossing point
+    for i in range(1, len(reference_particles)):
+        # check difference of previous values
+        diff_previous = reference_particles[i - 1].particle_energy - comparison_particles[i - 1].particle_energy
+        # and current ones
+        diff_current = reference_particles[i].particle_energy - comparison_particles[i].particle_energy
+        # if there is no intersection, the two differences will have same sign
+        if diff_previous * diff_current < 0:
+            intersections.append((reference_particles[i].size, comparison_particles[i].size))
+    return intersections

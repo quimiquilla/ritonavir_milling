@@ -35,22 +35,23 @@ def run_cross_check(nanoparticles_1, nanoparticles_2):
     count_switched = 0
     for part_1 in nanoparticles_1:
         for part_2 in nanoparticles_2:
-            # the surface energy difference (changed of sign) needs to be larger than lattice energy difference
-            # this assumes that part_1 was calculated for the metastable polymorph and part_2 for the stable_1,
-            # better to check if that's actually the case
-            if part_1.bulk_energy > part_2.bulk_energy:
-                lattice_energy_difference = part_1.bulk_energy - part_2.bulk_energy
+
+            # for this check we are doing, we are assuming that particle size is the same
+            if part_1.size != part_2.size:
+                raise ValueError("The particles have different sizes!")
+
+            # decide which is metastable
+            if part_1.bulk_energy < part_2.bulk_energy:
+                stable_part = part_1
+                metastable_part = part_2
             else:
-                # if not, swap the energies
-                lattice_energy_difference = part_2.bulk_energy - part_1.bulk_energy
+                stable_part = part_2
+                metastable_part = part_1
 
-            if lattice_energy_difference < 0:
-                raise ValueError("The lattice energy difference is negative! Please check!")
-
-            surf_pen_diff = - (part_1.surface_energy_penalty - part_2.surface_energy_penalty)
-            if surf_pen_diff >= lattice_energy_difference:
-                count_switched += 1
             count_total += 1
+
+            if stable_part.particle_energy > metastable_part.particle_energy:
+                count_switched += 1
 
     return count_switched, count_total
 

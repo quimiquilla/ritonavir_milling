@@ -40,7 +40,7 @@ class MorphologyVisualiser:
                          zs=[point[2] for point in intercept_points], color='red')
 
     @staticmethod
-    def _wireframe(face_for_wireframe, ax):
+    def _wireframe(face_for_wireframe, ax, colour="grey"):
         """
         Plot wireframe of morphology in matplotlib
 
@@ -53,7 +53,7 @@ class MorphologyVisualiser:
                         [coord[0] for coord in edge],
                         [coord[1] for coord in edge],
                         [coord[2] for coord in edge],
-                        c='black',
+                        c=colour,
                         linewidth=1.5)
 
     @staticmethod
@@ -96,7 +96,7 @@ class MorphologyVisualiser:
                    color='black')
 
     @staticmethod
-    def generate_morphology_plot(morphology, colour="teal"):
+    def generate_morphology_plot(morphology, facet_colour="teal", edges_colour="grey", axes=True, hkl_labels=True):
         """
         Main driving function for plotting a morphology
 
@@ -110,16 +110,20 @@ class MorphologyVisualiser:
         fig = plt.figure(figsize=(10., 10.))  # 3D graph instance
         ax = fig.add_subplot(111, projection="3d", proj_type="ortho")  # 3D Axes
         ax.grid(False)
-        plt.axis('on')
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
+        if axes:
+            plt.axis('on')
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Z')
+        else:
+            plt.axis('off')
 
         #  Plot the morphology in matplotlib
         for facet in morphology.facets:
-            MorphologyVisualiser._wireframe(facet, ax)  # Plot the edges
-            MorphologyVisualiser._skin(facet, colour, ax)  # Mesh the faces
-            MorphologyVisualiser._add_labels(facet, ax)  # Add labels to the faces
+            MorphologyVisualiser._wireframe(facet, ax, edges_colour)  # Plot the edges
+            MorphologyVisualiser._skin(facet, facet_colour, ax) # Mesh the faces
+            if hkl_labels:
+                MorphologyVisualiser._add_labels(facet, ax)  # Add labels to the faces
 
         # Orient and position the morphology in a way that is easy to view in a 2D image
         obb = morphology.oriented_bounding_box  # First we generate an oriented bounding box
@@ -129,7 +133,7 @@ class MorphologyVisualiser:
         ax.set_ylim3d(-1 * extent, extent)
         ax.set_zlim3d(-1 * extent, extent)
 
-        plt.show()
+        plt.show(block=True)
         return ax
 
     @staticmethod

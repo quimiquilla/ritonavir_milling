@@ -17,13 +17,14 @@ from pec_visualiser import ParticleEnergyVisualiser
 import pec_utilities
 
 
-def run_size_sweep(crystal, lattice_energy, attachment_energies, user_distances=None):
+def run_size_sweep(crystal, lattice_energy, attachment_energies, user_distances=None, start_size=200, end_size=1000,
+                   n_steps=50):
     """ Calculate a nanoparticle for a range of sizes and return the NanoParticle objects """
 
     nanoparticles = []
 
     # although the final values are reported in nm, we initially create a Nanoparticle using distances in Angstroms!
-    ped_values = np.linspace(200, 1000, 50)
+    ped_values = np.linspace(start_size, end_size, n_steps)
 
     for size in ped_values:
         # if a morphology is specified, use that morphology
@@ -71,7 +72,7 @@ if __name__ == "__main__":
     rvr_2_nanoparticles = run_size_sweep(rvr_2_crystal, rvr_2_lattice_energy, rvr_2_attachment_energies)
     print(f"time for {len(rvr_2_nanoparticles)} particles of RVR-II: {round(time.time() - time_start, 2)} s")
 
-    print(verify_cross_size(rvr_1_nanoparticles, rvr_2_nanoparticles))
+    print(pec_utilities.verify_cross_size(rvr_1_nanoparticles, rvr_2_nanoparticles))
 
     # finally, plot the energies
     ParticleEnergyVisualiser.generate_energy_plot(rvr_1_nanoparticles, rvr_2_nanoparticles)
@@ -95,6 +96,7 @@ if __name__ == "__main__":
                                          user_distances=rvr_2_needle_distances)
     print(f"time for {len(rvr_2_nanoparticles)} particles of RVR-II: {round(time.time() - time_start, 2)} s")
 
+    # get the size at which curves intersect (this will be in the original units for the nanoparticles, i.e. Angstroms!)
     print(pec_utilities.verify_cross_size(rvr_1_nanoparticles, rvr_2_nanoparticles))
 
     # finally, plot the energies

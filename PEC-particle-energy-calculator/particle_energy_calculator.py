@@ -50,6 +50,7 @@ class NanoParticle:
             self.equivalent_diameter = self.volume_to_diameter(volume=size)
 
         if user_distances:
+            self._check_if_energy_present(user_distances)
             self._growth_rates = user_distances
         else:
             self._growth_rates = [(item, value * -1) for item, value in attachment_energies]
@@ -120,6 +121,16 @@ class NanoParticle:
             total_energy += self.surface_fraction * morphological_importance * energy
         self._surface_energy_penalty = -1 * total_energy / 2
         return self._surface_energy_penalty
+
+    def _check_if_energy_present(self, user_distances):
+        """Checks if a user-provided facet has associated attachment energies"""
+        reference_hkls = [self.attachment_energies[i][0].hkl for i in range(len(self.attachment_energies))]
+        comparison_hkls = [user_distances[i][0].hkl for i in range(len(user_distances))]
+        for hkl in comparison_hkls:
+            if hkl in reference_hkls:
+                continue
+            else:
+                raise ValueError(f"Attachment energies for {hkl} were not provided!")
 
     @property
     def _relative_distances(self):

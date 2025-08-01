@@ -115,6 +115,7 @@ class NanoParticle:
         """Calculate the total surface energy penalty of the particle"""
         total_energy = 0
         for miller_indices, energy in self.attachment_energies:
+            # if facet is not present in morphology, morphological importance will be zero
             morphological_importance = self.morphology.relative_area(miller_indices)
             total_energy += self.surface_fraction * morphological_importance * energy
         self._surface_energy_penalty = -1 * total_energy / 2

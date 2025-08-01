@@ -52,7 +52,7 @@ class NanoParticle:
         if user_distances:
             self._growth_rates = user_distances
         else:
-            self._growth_rates = attachment_energies
+            self._growth_rates = [(item, value * -1) for item, value in attachment_energies]
 
         self.total_surface_molecules = None
 
